@@ -1,25 +1,23 @@
 #!/bin/bash
 
 # Test Runner Script for CSV Data Processing Pipeline
-# Executes comprehensive test suite and generates test reports
 
 set -euo pipefail
 
-# Configuration
+# Config
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPORTS_DIR="${SCRIPT_DIR}/reports"
 readonly TESTS_DIR="${SCRIPT_DIR}/tests"
 readonly DATA_DIR="${SCRIPT_DIR}/data"
 readonly TEST_RESULTS_DIR="${SCRIPT_DIR}/test_results"
 
-# Colors for output
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
 readonly NC='\033[0m' # No Color
 
-# Logging functions
+# Logging
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $(date '+%Y-%m-%d %H:%M:%S') - $*"
 }
@@ -36,20 +34,18 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $(date '+%Y-%m-%d %H:%M:%S') - $*"
 }
 
-# Cleanup function
+# Cleanup
 cleanup() {
     log_info "Cleaning up temporary files..."
     rm -f /tmp/combined_sales*.csv /tmp/emp_dept.csv 2>/dev/null || true
 }
 
-# Trap cleanup on exit
 trap cleanup EXIT
 
-# Validate environment
 validate_environment() {
     log_info "Validating test environment..."
     
-    # Check required directories
+    # check required directories
     local required_dirs=("$DATA_DIR" "$TESTS_DIR")
     for dir in "${required_dirs[@]}"; do
         if [[ ! -d "$dir" ]]; then
@@ -58,7 +54,7 @@ validate_environment() {
         fi
     done
     
-    # Check required files
+    # check required files
     local required_files=(
         "$DATA_DIR/employees.csv"
         "$DATA_DIR/sales_q1.csv"
@@ -75,13 +71,13 @@ validate_environment() {
         fi
     done
     
-    # Check if solution.sh is executable
+    # check if solution.sh is executable
     if [[ ! -x "./solution.sh" ]]; then
         log_warning "Making solution.sh executable..."
         chmod +x "./solution.sh"
     fi
     
-    # Check Python and pytest availability
+    # check python and pytest availability
     if ! command -v python3 &> /dev/null; then
         log_error "Python3 not found. Please install Python3."
         return 1
@@ -95,7 +91,7 @@ validate_environment() {
         }
     fi
     
-    log_success "Environment validation completed"
+    log_success "Environment validation finished"
     return 0
 }
 
@@ -130,7 +126,7 @@ run_solution() {
             fi
         done
         
-        log_success "All expected reports generated successfully"
+        log_success "success! All expected reports generated"
         return 0
     else
         log_error "Solution script failed or timed out (10 minutes)"
@@ -138,20 +134,18 @@ run_solution() {
     fi
 }
 
-# Run comprehensive tests
+# test runs
 run_tests() {
     log_info "Running comprehensive test suite..."
     
-    # Create test results directory
     mkdir -p "$TEST_RESULTS_DIR"
     
-    # Run pytest with detailed output
     local test_output_file="${TEST_RESULTS_DIR}/test_results.txt"
     local test_xml_file="${TEST_RESULTS_DIR}/test_results.xml"
     
     log_info "Executing pytest with verbose output..."
     
-    # Run tests and capture output
+    # capture output
     if python3 -m pytest "$TESTS_DIR/test_outputs.py" \
         -v \
         --tb=short \
@@ -175,7 +169,6 @@ run_tests() {
     fi
 }
 
-# Generate test summary
 generate_test_summary() {
     local test_output_file="$1"
     local summary_file="${TEST_RESULTS_DIR}/test_summary.txt"
@@ -210,16 +203,16 @@ generate_test_summary() {
         
         echo ""
         echo "Test Coverage Areas:"
-        echo "   Revenue calculations and ranking"
-        echo "   Department salary analysis"
-        echo "   Missing data detection"
-        echo "   Duplicate record identification"
-        echo "   Monthly trend analysis"
-        echo "   Output format consistency"
-        echo "   Server performance outliers"
-        echo "   Regional performance comparison"
-        echo "   Data validation comprehensive"
-        echo "   Summary statistics accuracy"
+        echo "Revenue calculations and ranking"
+        echo "Department salary analysis"
+        echo "Missing data detection"
+        echo "Duplicate record identification"
+        echo "Monthly trend analysis"
+        echo "Output format consistency"
+        echo "Server performance outliers"
+        echo "Regional performance comparison"
+        echo "Data validation comprehensive"
+        echo "Summary statistics accuracy"
         
         echo ""
         echo "Generated Reports:"
@@ -236,7 +229,7 @@ generate_test_summary() {
             echo "  Test Execution: $test_duration"
         fi
         
-        # Check solution performance
+        # check soln performance
         if [[ -f "$REPORTS_DIR/top_performers.txt" ]]; then
             local report_size=$(du -sh "$REPORTS_DIR" | cut -f1)
             echo "  Reports Size: $report_size"
@@ -246,12 +239,12 @@ generate_test_summary() {
     
     log_success "Test summary generated: $summary_file"
     
-    # Display summary to console
+    # display summary to console
     echo ""
     cat "$summary_file"
 }
 
-# Generate failure summary
+# generate failure summary
 generate_failure_summary() {
     local test_output_file="$1"
     local failure_file="${TEST_RESULTS_DIR}/test_failures.txt"
@@ -284,16 +277,15 @@ generate_failure_summary() {
     
     log_error "Test failures documented: $failure_file"
     
-    # Display failure summary to console
+    # display failure summary to console
     echo ""
     cat "$failure_file"
 }
 
-# Validate solution performance
 validate_performance() {
     log_info "Validating solution performance..."
     
-    # Check execution time (should be under 10 minutes)
+    # check execution time if under 10 minutes
     local solution_log="/tmp/solution_performance.log"
     
     if [[ -f "$solution_log" ]]; then
@@ -303,7 +295,7 @@ validate_performance() {
         fi
     fi
     
-    # Check memory usage (reports should be reasonable size)
+    # check memory usage if reports are reasonable size
     if [[ -d "$REPORTS_DIR" ]]; then
         local total_size=$(du -sb "$REPORTS_DIR" | cut -f1)
         local size_mb=$((total_size / 1024 / 1024))
@@ -315,17 +307,17 @@ validate_performance() {
         fi
     fi
     
-    # Check for deterministic output
+    # check for deterministic output
     log_info "Checking output determinism..."
     
-    # Run solution twice and compare (simplified check)
+    # run solution twice and compare (simplified check)
     local first_run_hash=""
     local second_run_hash=""
     
     if [[ -f "$REPORTS_DIR/top_performers.txt" ]]; then
         first_run_hash=$(md5sum "$REPORTS_DIR/top_performers.txt" | cut -d' ' -f1)
         
-        # Run solution again
+        # run solution again
         ./solution.sh > /dev/null 2>&1
         
         second_run_hash=$(md5sum "$REPORTS_DIR/top_performers.txt" | cut -d' ' -f1)
@@ -341,31 +333,27 @@ validate_performance() {
 # Main execution
 main() {
     echo "==============================================="
-    echo "    CSV DATA PROCESSING PIPELINE - TEST RUNNER"
+    echo "  TEST RUNNER FOR CSV DATA PROCESSING PIPELINE"
     echo "==============================================="
     echo ""
     
     local exit_code=0
     
-    # Validate environment
     if ! validate_environment; then
         log_error "Environment validation failed"
         exit 1
     fi
     
-    # Run solution
     if ! run_solution; then
         log_error "Solution execution failed"
         exit 1
     fi
     
-    # Run tests
     if ! run_tests; then
         log_error "Test execution failed"
         exit_code=1
     fi
     
-    # Validate performance
     validate_performance
     
     echo ""
@@ -388,5 +376,4 @@ main() {
     exit $exit_code
 }
 
-# Execute main function
 main "$@"
