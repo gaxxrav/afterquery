@@ -11,6 +11,7 @@ Thumbs.db
 
 # Docker
 .dockerignore
+docker-test-summary.md
 
 # Python
 __pycache__/
