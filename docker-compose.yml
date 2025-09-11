@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  csv-pipeline:
+    build: .
+    container_name: csv-data-processor
+    volumes:
+      - ./data:/workspace/data:ro
+      - ./reports:/workspace/reports
+      - ./tests:/workspace/tests:ro
+    environment:
+      - TZ=UTC
+    working_dir: /workspace
+    command: ./solution.sh
+    mem_limit: 512m
+    networks:
+      - none
+    
+  test-runner:
+    build: .
+    container_name: csv-test-runner
+    volumes:
+      - ./data:/workspace/data:ro
+      - ./reports:/workspace/reports
+      - ./tests:/workspace/tests:ro
+      - ./expected_outputs:/workspace/expected_outputs:ro
+    environment:
+      - TZ=UTC
+    working_dir: /workspace
+    command: ./run-tests.sh
+    mem_limit: 512m
+    networks:
+      - none
+    depends_on:
+      - csv-pipeline
+
+networks:
+  none:
+    driver: bridge

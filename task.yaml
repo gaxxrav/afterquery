@@ -1,0 +1,125 @@
+name: "CSV Data Processing Pipeline"
+description: "Process multiple CSV files to generate executive summary reports using Bash and Unix tools"
+version: "1.0.0"
+difficulty: "intermediate"
+estimated_time: "45-60 minutes"
+max_runtime: "10 minutes"
+
+tags:
+  - bash
+  - csv-processing
+  - data-analysis
+  - unix-tools
+  - awk
+  - sed
+  - sort
+  - join
+
+requirements:
+  - "Docker installed"
+  - "Basic knowledge of Bash scripting"
+  - "Familiarity with Unix command-line tools"
+  - "Understanding of CSV file format"
+
+learning_objectives:
+  - "Master advanced Bash scripting techniques"
+  - "Process and analyze CSV data using Unix tools"
+  - "Implement data quality validation and error handling"
+  - "Generate formatted reports from raw data"
+  - "Optimize performance for large dataset processing"
+
+files:
+  input:
+    - "data/employees.csv"
+    - "data/sales_q1.csv" 
+    - "data/sales_q2.csv"
+    - "data/server_metrics.csv"
+  
+  output:
+    - "reports/top_performers.txt"
+    - "reports/department_analysis.txt"
+    - "reports/trend_analysis.txt"
+    - "reports/data_quality.txt"
+  
+  solution:
+    - "solution.sh"
+
+docker:
+  image: "ubuntu:22.04"
+  working_directory: "/workspace"
+  timeout: 600  # 10 minutes
+  memory_limit: "512m"
+  no_network: true
+  
+test_suite:
+  framework: "python"
+  test_file: "tests/test_outputs.py"
+  test_runner: "python3 -m pytest"
+  
+validation:
+  required_tools:
+    - "awk"
+    - "sed" 
+    - "sort"
+    - "uniq"
+    - "join"
+    - "grep"
+    - "cut"
+  
+  forbidden_tools:
+    - "python"
+    - "perl"
+    - "ruby"
+    - "node"
+    - "curl"
+    - "wget"
+  
+  performance_metrics:
+    max_execution_time: 600
+    max_memory_usage: "512MB"
+    deterministic_output: true
+
+scoring:
+  total_points: 100
+  breakdown:
+    correctness: 40
+    code_quality: 20
+    performance: 15
+    edge_case_handling: 15
+    tool_usage: 10
+
+business_context:
+  scenario: "Systems Administrator at Mid-Size Company"
+  data_sources:
+    - "HR System: Employee records and organizational data"
+    - "Sales CRM: Transaction records and performance metrics"
+    - "Server Monitoring: Infrastructure performance data"
+  
+  deliverables:
+    - "Executive summary reports for management"
+    - "Data quality assessment and validation"
+    - "Performance trend analysis"
+    - "Actionable insights from raw data"
+
+edge_cases:
+  - "Malformed CSV records"
+  - "Missing employee references in sales data"
+  - "Invalid date formats and ranges"
+  - "Negative monetary amounts"
+  - "Duplicate transaction records"
+  - "Empty or null field values"
+  - "Inconsistent field separators"
+  - "Unicode characters in names"
+
+assessment_criteria:
+  automated_tests:
+    weight: 60
+    description: "Comprehensive test suite covering all requirements"
+  
+  code_review:
+    weight: 25
+    description: "Code quality, readability, and best practices"
+  
+  performance_analysis:
+    weight: 15
+    description: "Execution time and resource utilization"
