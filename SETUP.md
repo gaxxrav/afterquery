@@ -19,6 +19,7 @@ chmod +x run-tests.sh
 
 Project Structure
 
+```text
 csv-data-processing-pipeline/
 ├── solution.sh                  # Main solution script
 ├── run-tests.sh                 # Test execution script
@@ -34,6 +35,7 @@ csv-data-processing-pipeline/
 │   └── data_quality.txt
 └── tests/
     └── test_outputs.py          # Automated test suite
+```
 
 Required Reports
 	1.	Top Performers Report (reports/top_performers.txt)
