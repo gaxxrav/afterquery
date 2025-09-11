@@ -1,12 +1,12 @@
-# CSV Data Processing Pipeline - AfterQuery Assessment Task
+# AfterQuery Assessment Task - CSV Data Processing Pipeline
 
-## Overview
-
-This Bash/Linux assessment task simulates a real-world business data analysis challenge. You'll process multiple CSV files containing employee data, sales records, and server metrics to generate summary reports using Bash and standard Unix tools
+- simulates a real world business data analysis challenge. 
+- process multiple CSV files containing employee data, sales records, and server metrics.
+- generate summary reports using bash and unix tools
 
 ## Scenario
 
-You're a systems admin at a company receiving monthly CSV exports from:
+youre receiving monthly CSV exports from:
 - **HR System**: Employee data (departments, salaries, hire dates)
 - **Sales CRM**: Sales transactions (rep, amount, date, region)
 - **Server Monitoring**: Performance metrics (CPU, memory, disk usage)
@@ -29,7 +29,7 @@ You're a systems admin at a company receiving monthly CSV exports from:
    docker build -t csv-pipeline .
    ```
 
-3. **Run the assessment:**
+3. **Run main:**
    ```bash
    docker run --rm -v $(pwd):/workspace csv-pipeline
    ```
@@ -39,9 +39,7 @@ You're a systems admin at a company receiving monthly CSV exports from:
    ./run-tests.sh
    ```
 
-## Task Requirements
-
-Create a `solution.sh` script that processes the provided CSV files and generates four comprehensive reports:
+- `solution.sh` script processes the provided CSV files and generates four comprehensive reports:
 
 ### 1. Top Performers Report
 - Top 5 sales reps by total revenue
@@ -67,7 +65,7 @@ Create a `solution.sh` script that processes the provided CSV files and generate
 
 ## Data Files
 
-The following CSV files are provided in the `data/` directory:
+The generated CSV files are in the `data/` directory:
 
 - `employees.csv`: Employee information (100 records)
 - `sales_q1.csv`: Q1 sales transactions (150 records)
@@ -86,16 +84,15 @@ The following CSV files are provided in the `data/` directory:
 - **Standard Bash**: loops, conditionals, functions
 
 ### Output Format
-- Clean, formatted reports (plain text or CSV)
+- Clean adn formatted reports (plain text)
 - Consistent structure for automated testing
-- Clear headers and summaries
-- Graceful handling of edge cases
+- handles edge cases well
 
 ### Performance Requirements
-- Runtime under 10 minutes
-- No privileged Docker flags required
-- Deterministic outputs (same input = same output)
-- Self-contained (no internet access required)
+- fast runtime
+- no privileged Docker flags required
+- deterministic outputs (same input = same output)
+- self-contained (no internet access required)
 
 ## Testing
 
