@@ -8,7 +8,7 @@ Quick Start
 
 docker build -t csv-pipeline .
 
-	2.	Run the assessment:
+	2.	Run main script:
 
 docker run --rm -v $(pwd):/workspace csv-pipeline
 
