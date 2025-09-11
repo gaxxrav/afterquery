@@ -1,19 +1,14 @@
 #!/bin/bash
-
-# Sample Data Generator for CSV Data Processing Pipeline
 # Generates realistic test data with controlled edge cases
 
 set -euo pipefail
 
 readonly DATA_DIR="data"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Create data directory
 mkdir -p "$DATA_DIR"
 
-echo "Generating sample CSV data files..."
+echo "Generating sample CSV datafiles..."
 
-# Generate employees.csv with realistic data and edge cases
 cat > "$DATA_DIR/employees.csv" << 'EOF'
 employee_id,name,department,salary,hire_date,manager_id
 1001,John Smith,Engineering,95000,2020-01-15,1050
@@ -43,9 +38,9 @@ employee_id,name,department,salary,hire_date,manager_id
 1100,Danielle Miller,Sales,80000,2018-02-29,1051
 EOF
 
-echo "✓ Generated employees.csv (25 records with edge cases)"
+echo " Generated employees.csv (25 records with edge cases)"
 
-# Generate sales_q1.csv with realistic transaction data
+# sales_q1.csv
 cat > "$DATA_DIR/sales_q1.csv" << 'EOF'
 transaction_id,employee_id,amount,date,region,product
 T001,1002,15000,2024-01-05,North,Software
@@ -60,9 +55,9 @@ T149,,12000,2024-03-25,West,Support
 T150,1016,18000,2024-02-30,North,Software
 EOF
 
-echo "✓ Generated sales_q1.csv (10 records with edge cases)"
+echo "Generated sales_q1.csv (10 edge cases)"
 
-# Generate sales_q2.csv with realistic transaction data and duplicates
+# sales_q2.csv (includes duplicates)
 cat > "$DATA_DIR/sales_q2.csv" << 'EOF'
 transaction_id,employee_id,amount,date,region,product
 T201,1002,16500,2024-04-02,North,Software
@@ -77,9 +72,9 @@ T349,,14000,2024-05-25,West,Support
 T350,1016,20000,2024-06-31,North,Software
 EOF
 
-echo "✓ Generated sales_q2.csv (10 records with duplicates and edge cases)"
+echo "Generated sales_q2.csv (10 records with duplicates and edge cases)"
 
-# Generate server_metrics.csv with performance data and outliers
+# server_metrics.csv wiht performance data and outliers
 cat > "$DATA_DIR/server_metrics.csv" << 'EOF'
 server_id,timestamp,cpu_usage,memory_usage,disk_usage,status
 WEB-01,2024-01-01 00:00:00,25.4,68.2,45.1,healthy
@@ -101,7 +96,7 @@ APP-01,2024-01-01 21:00:00,28.4,-15.2,41.5,error
 APP-02,2024-01-01 21:00:00,35.7,74.8,150.3,warning
 EOF
 
-echo "✓ Generated server_metrics.csv (17 records with outliers and edge cases)"
+echo "Generated server_metrics.csv (17 records with outliers and edge cases)"
 
 echo ""
 echo "Sample data generation completed!"

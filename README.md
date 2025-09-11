@@ -1,4 +1,4 @@
-# AfterQuery Assessment Task - CSV Data Processing Pipeline
+# AfterQuery Assessment - CSV Data Processing Pipeline
 
 - simulates a real world business data analysis challenge. 
 - process multiple CSV files containing employee data, sales records, and server metrics.
