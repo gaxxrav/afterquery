@@ -2,11 +2,11 @@
 
 ## Overview
 
-This is a comprehensive Bash/Linux assessment task that simulates a real-world business data analysis challenge. You'll process multiple CSV files containing employee data, sales records, and server metrics to generate executive summary reports using Bash and standard Unix tools.
+This Bash/Linux assessment task simulates a real-world business data analysis challenge. You'll process multiple CSV files containing employee data, sales records, and server metrics to generate summary reports using Bash and standard Unix tools
 
-## Business Scenario
+## Scenario
 
-You're a systems administrator at a mid-size company receiving monthly CSV exports from:
+You're a systems admin at a company receiving monthly CSV exports from:
 - **HR System**: Employee data (departments, salaries, hire dates)
 - **Sales CRM**: Sales transactions (rep, amount, date, region)
 - **Server Monitoring**: Performance metrics (CPU, memory, disk usage)
@@ -20,7 +20,7 @@ You're a systems administrator at a mid-size company receiving monthly CSV expor
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/gaxxrav/afterquery.git
    cd csv-data-processing-pipeline
    ```
 
@@ -117,7 +117,7 @@ csv-data-processing-pipeline/
 ├── task.yaml
 ├── Dockerfile
 ├── docker-compose.yml
-├── solution.sh                 # Your implementation goes here
+├── solution.sh           
 ├── run-tests.sh
 ├── data/
 │   ├── employees.csv
@@ -126,7 +126,7 @@ csv-data-processing-pipeline/
 │   └── server_metrics.csv
 ├── tests/
 │   └── test_outputs.py
-├── expected_outputs/
+├── expected_reports/
 │   ├── top_performers.txt
 │   ├── department_analysis.txt
 │   ├── trend_analysis.txt
@@ -134,57 +134,3 @@ csv-data-processing-pipeline/
 └── scripts/
     └── generate_sample_data.sh
 ```
-
-## Edge Cases to Handle
-
-Your solution should gracefully handle:
-- Malformed CSV lines
-- Missing employee records in sales data
-- Invalid date formats
-- Negative sales amounts
-- Duplicate transactions
-- Empty fields
-- Inconsistent field separators
-
-## Submission Guidelines
-
-1. Implement your solution in `solution.sh`
-2. Ensure all tests pass: `./run-tests.sh`
-3. Verify Docker container runs successfully
-4. Check that outputs match expected format
-5. Test with edge cases and malformed data
-
-## Troubleshooting
-
-### Common Issues
-
-**Docker build fails:**
-- Ensure Docker is running
-- Check Dockerfile syntax
-- Verify base image availability
-
-**Tests fail:**
-- Check output format matches expected structure
-- Verify CSV parsing handles edge cases
-- Ensure mathematical calculations are accurate
-
-**Performance issues:**
-- Optimize awk/sed patterns
-- Use efficient sorting algorithms
-- Minimize file I/O operations
-
-**Permission errors:**
-- Ensure scripts are executable: `chmod +x solution.sh run-tests.sh`
-- Check Docker volume mounting permissions
-
-## Assessment Criteria
-
-Your solution will be evaluated on:
-- **Correctness**: Accurate data processing and calculations
-- **Code Quality**: Clean, readable, well-documented Bash code
-- **Performance**: Efficient processing of large datasets
-- **Edge Case Handling**: Robust error handling and data validation
-- **Tool Usage**: Effective use of Unix/Linux command-line tools
-- **Output Format**: Professional, consistent report formatting
-
-Good luck with your assessment!
