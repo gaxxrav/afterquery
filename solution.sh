@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # CSV Data Processing Pipeline - Solution Script
+# Author: Assessment Candidate
 # Description: Process employee, sales, and server data to generate executive reports
 
-set -euo pipefail
+set -euo pipefail  # Exit on error, undefined variables, and pipe failures
 
-# Config
+# Configuration
 readonly DATA_DIR="data"
 readonly REPORTS_DIR="reports"
 readonly EMPLOYEES_FILE="${DATA_DIR}/employees.csv"
@@ -13,8 +14,10 @@ readonly SALES_Q1_FILE="${DATA_DIR}/sales_q1.csv"
 readonly SALES_Q2_FILE="${DATA_DIR}/sales_q2.csv"
 readonly SERVER_METRICS_FILE="${DATA_DIR}/server_metrics.csv"
 
+# Create reports directory
 mkdir -p "${REPORTS_DIR}"
 
+# Utility functions
 log_info() {
     echo "[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $*" >&2
 }
@@ -36,6 +39,7 @@ validate_file() {
     return 0
 }
 
+# Validate input files
 validate_input_files() {
     log_info "Validating input files..."
     local files=("$EMPLOYEES_FILE" "$SALES_Q1_FILE" "$SALES_Q2_FILE" "$SERVER_METRICS_FILE")
@@ -48,11 +52,12 @@ validate_input_files() {
     log_info "All input files validated successfully"
 }
 
-# clean and normalize data
+# Clean and normalize data
 clean_csv_data() {
     local input_file="$1"
     local output_file="$2"
     
+    # Remove carriage returns, normalize field separators, handle quotes
     sed 's/\r$//' "$input_file" | \
     awk -F',' 'BEGIN{OFS=","} {
         # Handle quoted fields and normalize empty fields
@@ -67,6 +72,7 @@ clean_csv_data() {
     }' > "$output_file"
 }
 
+# Generate Top Performers Report
 generate_top_performers_report() {
     log_info "Generating Top Performers Report..."
     
@@ -79,7 +85,7 @@ generate_top_performers_report() {
         echo "Generated on: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
         
-        # Combine Q1 and Q2 sales data, exclude invalid records
+        # Combine Q1 and Q2 sales data, excluding invalid records
         local combined_sales="/tmp/combined_sales.csv"
         {
             head -1 "$SALES_Q1_FILE"
@@ -87,6 +93,7 @@ generate_top_performers_report() {
             tail -n +2 "$SALES_Q2_FILE" | grep -v '^[[:space:]]*$'
         } > "$combined_sales"
         
+        # Top 5 sales reps by total revenue
         echo "TOP 5 SALES REPS BY TOTAL REVENUE:"
         echo "=================================="
         awk -F',' 'NR>1 && $2 != "" && $2 != "NULL" && $3 ~ /^[0-9]+(\.[0-9]+)?$/ && $3 > 0 {
@@ -105,6 +112,7 @@ generate_top_performers_report() {
         
         echo ""
         
+        # Top 5 sales reps by number of deals
         echo "TOP 5 SALES REPS BY NUMBER OF DEALS:"
         echo "===================================="
         awk -F',' 'NR>1 && $2 != "" && $2 != "NULL" && $3 ~ /^[0-9]+(\.[0-9]+)?$/ && $3 > 0 {
@@ -123,6 +131,7 @@ generate_top_performers_report() {
         
         echo ""
         
+        # Performance metrics per rep (top 10)
         echo "PERFORMANCE METRICS (TOP 10 REPS):"
         echo "=================================="
         printf "%-12s %-15s %-12s %-15s\n" "Employee ID" "Total Revenue" "Deal Count" "Avg Deal Size"
@@ -147,6 +156,7 @@ generate_top_performers_report() {
     log_info "Top Performers Report generated: $output_file"
 }
 
+# Generate Department Analysis Report
 generate_department_analysis_report() {
     log_info "Generating Department Analysis Report..."
     
@@ -159,6 +169,7 @@ generate_department_analysis_report() {
         echo "Generated on: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
         
+        # Average salary by department
         echo "AVERAGE SALARY BY DEPARTMENT:"
         echo "============================="
         awk -F',' 'NR>1 && $3 != "" && $3 != "NULL" && $4 ~ /^[0-9]+(\.[0-9]+)?$/ && $4 > 0 {
@@ -173,6 +184,7 @@ generate_department_analysis_report() {
         
         echo ""
         
+        # Employee count per department
         echo "EMPLOYEE COUNT PER DEPARTMENT:"
         echo "=============================="
         awk -F',' 'NR>1 && $3 != "" && $3 != "NULL" {
@@ -185,14 +197,15 @@ generate_department_analysis_report() {
         
         echo ""
         
+        # Department revenue contribution
         echo "DEPARTMENT REVENUE CONTRIBUTION:"
         echo "==============================="
         
-        # create temp files for joining
+        # Create temporary files for joining
         local emp_dept="/tmp/emp_dept.csv"
         local combined_sales="/tmp/combined_sales_dept.csv"
         
-        # employee department mapping extraction
+        # Extract employee-department mapping
         awk -F',' 'NR>1 && $1 != "" && $3 != "" {print $1","$3}' "$EMPLOYEES_FILE" > "$emp_dept"
         
         # Combine sales data
@@ -201,7 +214,7 @@ generate_department_analysis_report() {
             tail -n +2 "$SALES_Q2_FILE" | grep -v '^[[:space:]]*$'
         } > "$combined_sales"
         
-        # Join sales with employee depts and calc revenue by dept
+        # Join sales with employee departments and calculate revenue by department
         join -t',' -1 2 -2 1 <(sort -t',' -k2 "$combined_sales") <(sort -t',' -k1 "$emp_dept") | \
         awk -F',' '$2 ~ /^[0-9]+(\.[0-9]+)?$/ && $2 > 0 {
             dept_revenue[$NF] += $2
@@ -216,6 +229,7 @@ generate_department_analysis_report() {
         
         echo ""
         
+        # Salary distribution statistics
         echo "SALARY DISTRIBUTION STATISTICS:"
         echo "==============================="
         awk -F',' 'NR>1 && $4 ~ /^[0-9]+(\.[0-9]+)?$/ && $4 > 0 {
@@ -255,6 +269,7 @@ generate_department_analysis_report() {
     log_info "Department Analysis Report generated: $output_file"
 }
 
+# Generate Trend Analysis Report
 generate_trend_analysis_report() {
     log_info "Generating Trend Analysis Report..."
     
@@ -267,6 +282,7 @@ generate_trend_analysis_report() {
         echo "Generated on: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
         
+        # Monthly sales trends
         echo "MONTHLY SALES TRENDS:"
         echo "===================="
         
@@ -276,7 +292,7 @@ generate_trend_analysis_report() {
             tail -n +2 "$SALES_Q2_FILE" | grep -v '^[[:space:]]*$'
         } > "$combined_sales"
         
-        # calculate monthly totals
+        # Calculate monthly totals
         awk -F',' '$4 ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ && $3 ~ /^[0-9]+(\.[0-9]+)?$/ && $3 > 0 {
             month = substr($4, 1, 7)  # Extract YYYY-MM
             monthly_sales[month] += $3
@@ -297,6 +313,7 @@ generate_trend_analysis_report() {
         
         echo ""
         
+        # Regional performance comparison
         echo "REGIONAL PERFORMANCE COMPARISON:"
         echo "==============================="
         awk -F',' '$3 ~ /^[0-9]+(\.[0-9]+)?$/ && $3 > 0 && $5 != "" {
@@ -318,6 +335,7 @@ generate_trend_analysis_report() {
         
         echo ""
         
+        # Server performance outliers
         echo "SERVER PERFORMANCE OUTLIERS:"
         echo "============================"
         echo "High CPU Usage (>90%):"
@@ -344,6 +362,7 @@ generate_trend_analysis_report() {
     log_info "Trend Analysis Report generated: $output_file"
 }
 
+# Generate Data Quality Report
 generate_data_quality_report() {
     log_info "Generating Data Quality Report..."
     
@@ -356,6 +375,7 @@ generate_data_quality_report() {
         echo "Generated on: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
         
+        # Missing data detection
         echo "MISSING DATA ANALYSIS:"
         echo "====================="
         
@@ -393,7 +413,8 @@ generate_data_quality_report() {
         echo "  Missing CPU data: $(awk -F',' 'NR>1 && ($3 == "" || $3 == "NULL")' "$SERVER_METRICS_FILE" | wc -l)"
         
         echo ""
-    
+        
+        # Duplicate record identification
         echo "DUPLICATE RECORDS:"
         echo "=================="
         
@@ -412,6 +433,7 @@ generate_data_quality_report() {
         
         echo ""
         
+        # Data validation
         echo "DATA VALIDATION ISSUES:"
         echo "======================="
         
@@ -440,6 +462,7 @@ generate_data_quality_report() {
         
         echo ""
         
+        # Summary statistics
         echo "SUMMARY STATISTICS:"
         echo "=================="
         
@@ -463,11 +486,14 @@ generate_data_quality_report() {
     log_info "Data Quality Report generated: $output_file"
 }
 
+# Main execution
 main() {
     log_info "Starting CSV Data Processing Pipeline..."
     
+    # Validate input files
     validate_input_files
     
+    # Generate all reports
     generate_top_performers_report
     generate_department_analysis_report
     generate_trend_analysis_report
@@ -476,6 +502,7 @@ main() {
     log_info "All reports generated successfully in ${REPORTS_DIR}/"
     log_info "Processing completed in $(date '+%Y-%m-%d %H:%M:%S')"
     
+    # Display summary
     echo ""
     echo "==============================================="
     echo "           PROCESSING SUMMARY"
@@ -486,4 +513,5 @@ main() {
     echo "Processing completed successfully!"
 }
 
+# Execute main function
 main "$@"

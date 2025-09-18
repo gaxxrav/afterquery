@@ -1,3 +1,4 @@
+id: csv-data-pipeline-20250918
 name: "CSV Data Processing Pipeline"
 description: "Process multiple CSV files to generate executive summary reports using Bash and Unix tools"
 version: "1.0.0"

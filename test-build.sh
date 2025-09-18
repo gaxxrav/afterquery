@@ -10,7 +10,7 @@ docker rmi csv-pipeline 2>/dev/null || true
 
 # Test build
 echo "Building with Cloudflare mirror (this may take 2-3 minutes)..."
-if timeout 300 docker build --no-cache -t csv-pipeline . 2>&1 | tee build.log; then
+if docker build --no-cache -t csv-pipeline . 2>&1 | tee build.log; then
     echo "Build successful!"
     
     # Quick container test
